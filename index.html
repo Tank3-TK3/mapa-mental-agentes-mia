@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Conceptual: Tipos de Agentes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen bg-[#f4f4f4] text-[#161616] flex flex-col">
+
+    <header class="bg-[#161616] text-white py-4 px-6 flex items-center justify-between border-b border-[#393939]">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-[#0f62fe] flex items-center justify-center font-bold text-white text-sm">AI</div>
+            <h1 class="font-medium text-lg tracking-tight">Mapa Conceptual: Tipos de Agentes</h1>
+        </div>
+        <div class="text-xs text-gray-400 font-mono hidden md:block">IBM Think Topics v2.0</div>
+    </header>
+
+    <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full flex flex-col gap-8">
+        
+        <section class="flex flex-col items-center">
+            <div class="bg-[#161616] text-white px-8 py-4 mb-8 shadow-lg relative border-l-4 border-[#0f62fe]">
+                <h2 class="text-xl font-bold">Agentes Inteligentes</h2>
+                <div class="absolute top-full left-1/2 w-0.5 h-8 bg-[#a8a8a8] -translate-x-1/2"></div>
+            </div>
+
+            <div class="hidden md:block w-full max-w-4xl h-4 border-t-2 border-l-2 border-r-2 border-[#a8a8a8] mb-4 relative">
+                <div class="absolute -top-1 left-1/2 w-2 h-2 bg-[#a8a8a8] rounded-full -translate-x-1/2"></div>
+                <div class="absolute top-0 left-[25%] w-0.5 h-4 bg-[#a8a8a8]"></div>
+                <div class="absolute top-0 left-[50%] w-0.5 h-4 bg-[#a8a8a8]"></div>
+                <div class="absolute top-0 left-[75%] w-0.5 h-4 bg-[#a8a8a8]"></div>
+            </div>
+
+            <div id="buttons-container" class="grid grid-cols-1 md:grid-cols-5 gap-4 w-full">
+                </div>
+        </section>
+
+        <section id="detail-section" class="flex-1 bg-white border border-[#e0e0e0] shadow-sm p-6 md:p-8 relative mt-2">
+            </section>
+
+        <footer class="text-center text-xs text-gray-500 py-6 border-t border-gray-200 bg-gray-50">
+            <div class="flex flex-col gap-2">
+                <p>Fuente: <a href="https://www.ibm.com/mx-es/think/topics/ai-agent-types" target="_blank" rel="noopener noreferrer" class="text-[#0f62fe] hover:underline">IBM Think Topics: Tipos de Agentes de IA</a></p>
+                <p class="font-semibold text-[#161616]">Elaborado por: Roberto Cruz Lozano</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        const agentsData = [
+            {
+                id: 'simple',
+                title: "Reflejos Simples",
+                icon: "zap",
+                shortDesc: "Acción = Reacción inmediata.",
+                description: "El tipo más primitivo. Responden directamente a las percepciones actuales ignorando la historia.",
+                differentiator: "Reglas 'Si-Entonces'. No tienen memoria. Si el sensor falla, el agente falla.",
+                example: "Termostato: Si Temperatura < 20° → Encender. (Sin pensar en la hora ni el coste)."
+            },
+            {
+                id: 'model',
+                title: "Reflejos + Modelos",
+                icon: "brain",
+                shortDesc: "Usa memoria interna.",
+                description: "Manejan entornos parcialmente ocultos manteniendo un 'estado interno' del mundo.",
+                differentiator: "Permanencia del objeto (Memoria). Saben que las cosas existen aunque no las vean ahora.",
+                example: "Coche Autónomo: Frena porque recuerda que un peatón cruzó detrás de un camión."
+            },
+            {
+                id: 'goal',
+                title: "Basados en Objetivos",
+                icon: "target",
+                shortDesc: "Busca metas futuras.",
+                description: "Proactivos. No solo reaccionan, sino que preguntan '¿Qué acción me lleva a mi meta?'.",
+                differentiator: "Planificación. Simulan futuros posibles antes de actuar para encontrar un camino.",
+                example: "GPS: Calcula una ruta compleja paso a paso para llegar a un destino B."
+            },
+            {
+                id: 'utility',
+                title: "Basados en Utilidad",
+                icon: "trending-up",
+                shortDesc: "Maximiza resultados.",
+                description: "No solo quieren llegar, quieren llegar de la mejor manera (rápido, barato, seguro).",
+                differentiator: "Función de Preferencia. Evalúan 'qué tan feliz' les hace un resultado (Trade-offs).",
+                example: "Uber/Didi: Elige ruta considerando tiempo vs. costo vs. tráfico."
+            },
+            {
+                id: 'learning',
+                title: "Agentes que Aprenden",
+                icon: "book-open",
+                shortDesc: "Mejora con el tiempo.",
+                description: "Pueden operar en lo desconocido y mejorar sus propias reglas mediante la experiencia.",
+                differentiator: "Autocorrección (Crítica). Tienen un maestro interno que les dice 'eso estuvo mal, cámbialo'.",
+                example: "Netflix: Aprende de lo que ves para recomendarte mejor cada día."
+            }
+        ];
+
+        let activeId = 'simple';
+
+        function render() {
+            const buttonsContainer = document.getElementById('buttons-container');
+            const detailSection = document.getElementById('detail-section');
+            
+            // 1. Render Buttons
+            buttonsContainer.innerHTML = agentsData.map(agent => {
+                const isActive = activeId === agent.id;
+                return `
+                    <button onclick="setActive('${agent.id}')" class="relative p-4 text-left border transition-all duration-200 group flex flex-col items-center md:items-start ${isActive ? 'bg-white border-[#0f62fe] shadow-md ring-1 ring-[#0f62fe]' : 'bg-[#e0e0e0] border-transparent hover:bg-[#d1d1d1] hover:border-[#8d8d8d]'}">
+                        ${isActive ? '<div class="absolute -bottom-3 left-1/2 md:left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-[#0f62fe] rotate-45 z-10 hidden md:block"></div>' : ''}
+                        <div class="mb-3 p-2 rounded-full ${isActive ? 'bg-[#edf5ff] text-[#0f62fe]' : 'bg-[#c6c6c6] text-[#525252]'}">
+                            <i data-lucide="${agent.icon}" width="24" height="24"></i>
+                        </div>
+                        <h3 class="font-bold text-sm leading-tight mb-1 ${isActive ? 'text-[#0f62fe]' : 'text-[#161616]'}">${agent.title}</h3>
+                        <p class="text-xs text-[#525252] hidden md:block line-clamp-2">${agent.shortDesc}</p>
+                    </button>
+                `;
+            }).join('');
+
+            // 2. Render Details
+            const activeAgent = agentsData.find(a => a.id === activeId);
+            detailSection.innerHTML = `
+                <div class="absolute top-0 left-0 bg-[#0f62fe] text-white text-xs font-bold px-3 py-1 uppercase tracking-wider">Detalle del Nodo Seleccionado</div>
+                <div class="mt-4 flex flex-col md:flex-row gap-8">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i data-lucide="${activeAgent.icon}" width="32" height="32" class="text-[#0f62fe]"></i>
+                            <h2 class="text-3xl font-light text-[#161616]">${activeAgent.title}</h2>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="flex items-center gap-2 text-sm font-bold text-gray-500 uppercase mb-2">
+                                    <i data-lucide="grid" width="16"></i> Concepto
+                                </h4>
+                                <p class="text-lg leading-relaxed border-l-4 border-gray-200 pl-4 text-gray-800">${activeAgent.description}</p>
+                            </div>
+                            <div>
+                                <h4 class="flex items-center gap-2 text-sm font-bold text-[#0f62fe] uppercase mb-2">
+                                    <i data-lucide="check-circle" width="16"></i> Elemento Diferenciador
+                                </h4>
+                                <div class="bg-[#edf5ff] p-4 border border-[#d0e2ff]">
+                                    <p class="text-md text-gray-800 font-medium">${activeAgent.differentiator}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/3 border-t md:border-t-0 md:border-l border-gray-200 pt-6 md:pt-0 md:pl-8">
+                        <h4 class="text-sm font-bold text-gray-500 uppercase mb-4">Ejemplo Real</h4>
+                        <div class="bg-[#161616] text-white p-6 relative h-full min-h-[200px] flex flex-col justify-center">
+                            <div class="absolute top-4 left-4 opacity-20"><i data-lucide="corner-down-right" width="48" height="48"></i></div>
+                            <p class="text-xl font-light italic text-center z-10">"${activeAgent.example}"</p>
+                            <div class="mt-6 flex justify-center">
+                                <div class="px-3 py-1 border border-white/30 text-xs rounded-full">Caso de Uso</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+        }
+
+        function setActive(id) {
+            activeId = id;
+            render();
+        }
+
+        // Init
+        render();
+    </script>
+</body>
+</html>
